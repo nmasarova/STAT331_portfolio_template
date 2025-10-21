@@ -1,6 +1,6 @@
 ---
 title: "STAT 331 Portfolio"
-author: "Your Name Goes Here"
+author: "Natalie Masarova"
 format: html 
 embed-resources: true
 layout: margin-left
