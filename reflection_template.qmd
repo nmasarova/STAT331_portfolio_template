@@ -22,14 +22,17 @@ execute:
 
 ```{r}
 #| label: wd-1-csv-1
+# From Lab 2, Problem 1
 
+surveys <- read_csv(here::here("week_2", "surveys.csv"))
 ```
 
 -   `csv` Example 2
 
 ```{r}
 #| label: wd-1-csv-2
-
+# From Lab 3, Problem 2
+surveys <- read_csv(here::here("week_2", "surveys.csv"))
 ```
 
 -   `xlsx`
@@ -45,7 +48,25 @@ execute:
 
 ```{r}
 #| label: wd-2-ex-1
-
+# From Lab 3, Question 5
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter( no_participants > 10) |>
+  mutate(
+    teacher_id = as.character(teacher_id),
+    weekday =  as.character(weekday)
+  ) |>
+  select(
+    course_id,
+    teacher_id, 
+    question_no, 
+    no_participants, 
+    resp_share, 
+    SET_score_avg, 
+    percent_failed_cur, 
+    academic_degree, 
+    seniority, 
+    sex )
 ```
 
 -   Example removing specified columns
@@ -149,7 +170,7 @@ execute:
 
 ```{r}
 #| label: wd-5-left-ex-1
-
+# 
 ```
 
 -   `right_join()` Example 1
@@ -218,11 +239,11 @@ execute:
 
 The following assignments satisfy the above criteria:
 
-- Example 1
-- Example 2
-- Example 3
-- Example 4
-- Example 5
+-   Example 1
+-   Example 2
+-   Example 3
+-   Example 4
+-   Example 5
 
 **R-2: I can write well documented and tidy code.**
 
@@ -311,7 +332,7 @@ The following assignments satisfy the above criteria:
 
 ```
 
--   I can modify my plot titles to clearly communicate the data context 
+-   I can modify my plot titles to clearly communicate the data context
 
 ```{r}
 #| label: dvs-2-ex-3
@@ -396,7 +417,7 @@ The following assignments satisfy the above criteria:
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
 
--   I can modify my column names to clearly communicate the data context 
+-   I can modify my column names to clearly communicate the data context
 
 ```{r}
 #| label: dvs-6-ex-1
@@ -460,7 +481,7 @@ The following assignments satisfy the above criteria:
 
 **PE-2: I can write functions to reduce repetition in my code.**
 
--   Example 1: Function that operates on vectors 
+-   Example 1: Function that operates on vectors
 
 ```{r}
 #| label: pe-2-1
