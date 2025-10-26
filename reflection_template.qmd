@@ -32,7 +32,7 @@ surveys <- read_csv(here::here("week_2", "surveys.csv"))
 ```{r}
 #| label: wd-1-csv-2
 # From Lab 3, Problem 2
-surveys <- read_csv(here::here("week_2", "surveys.csv"))
+teacher_evals <- read_csv(here::here("week_3", "teacher_evals.csv"))
 ```
 
 -   `xlsx`
@@ -51,11 +51,10 @@ surveys <- read_csv(here::here("week_2", "surveys.csv"))
 # From Lab 3, Question 5
 teacher_evals_clean <- teacher_evals |>
   rename(sex = gender) |>
-  filter( no_participants > 10) |>
+  filter(no_participants > 10) |>
   mutate(
     teacher_id = as.character(teacher_id),
-    weekday =  as.character(weekday)
-  ) |>
+    weekday =  as.character(weekday)) |>
   select(
     course_id,
     teacher_id, 
@@ -89,21 +88,54 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: wd-3-numeric-ex-1
-
+# From Lab 3, Question 5
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter( no_participants > 10) |>
+  mutate(
+    teacher_id = as.character(teacher_id),
+    weekday =  as.character(weekday)
+  ) |>
+  select(
+    course_id,
+    teacher_id, 
+    question_no, 
+    no_participants, 
+    resp_share, 
+    SET_score_avg, 
+    percent_failed_cur, 
+    academic_degree, 
+    seniority, 
+    sex )
 ```
 
 -   Numeric Example 2
 
 ```{r}
 #| label: wd-3-numeric-ex-1
-
+# From Lab 4, Question 5
+region_table <- ca_childcare |>
+  filter(study_year %in% c(2008, 2018)) |>
+  group_by (census_region, study_year) |>
+  summarize(median_income = median(mhi_2018)) |>
+  ungroup() |>
+  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "Year ") |>
+  arrange(desc('2018'))
 ```
 
 -   Character Example 1 (any context)
 
 ```{r}
 #| label: wd-3-character
-
+# Challenge 4
+ca_childcare <- counties |>
+  filter(
+    state_name == "California"
+  ) |>
+  left_join(
+    y = childcare_costs,
+    by = join_by(county_fips_code == county_fips_code)
+  )
 ```
 
 -   Character Example 2 (example must use functions from **stringr**)
@@ -126,7 +158,25 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: wd-4-numeric-ex-1
-
+# From Lab 3, Question 5
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter( no_participants > 10) |>
+  mutate(
+    teacher_id = as.character(teacher_id),
+    weekday =  as.character(weekday)
+  ) |>
+  select(
+    course_id,
+    teacher_id, 
+    question_no, 
+    no_participants, 
+    resp_share, 
+    SET_score_avg, 
+    percent_failed_cur, 
+    academic_degree, 
+    seniority, 
+    sex )
 ```
 
 -   Numeric Example 2
@@ -140,7 +190,17 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: wd-4-factor-ex-1
-
+# From Challenge 3, Question 1
+teacher_evals_compare <- teacher_evals |>
+  filter(question_no == 903) |>
+  mutate(
+    set_level = if_else(SET_score_avg >= 4, "Excellent", "Standard"),
+    sen_level = case_when(
+      seniority <= 4 ~ "Junior",
+      seniority >= 5 & seniority <= 8 ~ "Senior",
+      seniority > 8 ~ "Very Senior"
+    )) |>
+  select(set_level, sen_level, course_id)
 ```
 
 -   Factor Example 2 (reordering levels)
@@ -170,7 +230,15 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: wd-5-left-ex-1
-# 
+# Challenge 4
+ca_childcare <- counties |>
+  filter(
+    state_name == "California"
+  ) |>
+  left_join(
+    y = childcare_costs,
+    by = join_by(county_fips_code == county_fips_code)
+  )
 ```
 
 -   `right_join()` Example 1
@@ -223,14 +291,52 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: wd-7-long
-
+# From Challenge 4
+childcare_vs_poverty <- ca_childcare |>
+  select(mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_preschool, mfcc_toddler, pr_f) |>
+  pivot_longer(
+    cols = starts_with("mc"),
+    names_to = "center_age_group",
+    values_to = "median_center_cost"
+  ) |>
+  mutate(
+    center_age_group = case_when(
+      center_age_group == "mc_infant" ~ "Infant",
+      center_age_group == "mc_toddler" ~ "Toddler",
+      center_age_group == "mc_preschool" ~ "Preschool"
+    )
+  ) |>
+  pivot_longer(
+    cols = starts_with("mfcc"),
+    names_to = "home_age_group",
+    values_to = "median_home_cost"
+  ) |>
+  mutate(
+     home_age_group = case_when(
+      home_age_group == "mfcc_infant" ~ "Infant",
+      home_age_group == "mfcc_toddler" ~ "Toddler",
+      home_age_group == "mfcc_preschool" ~ "Preschool"
+    )) |>
+ mutate(
+    poverty_rate = cut(
+      pr_f,
+      breaks = 3,
+      labels = c("low", "medium", "high"))
+  )
 ```
 
 -   `pivot_wider()`
 
 ```{r}
 #| label: wd-7-wide
-
+# From Lab 4, Question 5
+region_table <- ca_childcare |>
+  filter(study_year %in% c(2008, 2018)) |>
+  group_by (census_region, study_year) |>
+  summarize(median_income = median(mhi_2018)) |>
+  ungroup() |>
+  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "Year ") |>
+  arrange(desc('2018'))
 ```
 
 ## Reproducibility
@@ -251,14 +357,47 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: r-2-1
-
+# Challenge 4
+ca_childcare <- ca_childcare |> 
+  mutate(county_name = str_remove(county_name, " County")) |>
+  mutate(census_region = fct_collapse(
+    .f = county_name,
+    "superior" = superior_counties,
+    "northcoast" = north_coast_counties,
+    "sanfran" = san_fran_counties,
+    "northsanjoaquin" = n_san_joaquin_counties,
+    "centralcoast" = central_coast_counties,
+    "southsanjoaquin" = s_san_joaquin_counties,
+    "inland" = inland_counties,
+    "la" = la_county,
+    "orange county" = orange_county,
+    "sandiegoimperial" = san_diego_imperial_counties
+  ))
 ```
 
 -   Example of **dplyr** pipeline
 
 ```{r}
 #| label: r-2-2
-
+# From Lab 3, Question 5
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter( no_participants > 10) |>
+  mutate(
+    teacher_id = as.character(teacher_id),
+    weekday =  as.character(weekday)
+  ) |>
+  select(
+    course_id,
+    teacher_id, 
+    question_no, 
+    no_participants, 
+    resp_share, 
+    SET_score_avg, 
+    percent_failed_cur, 
+    academic_degree, 
+    seniority, 
+    sex )
 ```
 
 -   Example of function formatting
@@ -336,7 +475,37 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: dvs-2-ex-3
-
+# From Challenge 4, childcare_vs_poverty <- ca_childcare |>
+  select(mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_preschool, mfcc_toddler, pr_f) |>
+  pivot_longer(
+    cols = starts_with("mc"),
+    names_to = "center_age_group",
+    values_to = "median_center_cost"
+  ) |>
+  mutate(
+    center_age_group = case_when(
+      center_age_group == "mc_infant" ~ "Infant",
+      center_age_group == "mc_toddler" ~ "Toddler",
+      center_age_group == "mc_preschool" ~ "Preschool"
+    )
+  ) |>
+  pivot_longer(
+    cols = starts_with("mfcc"),
+    names_to = "home_age_group",
+    values_to = "median_home_cost"
+  ) |>
+  mutate(
+     home_age_group = case_when(
+      home_age_group == "mfcc_infant" ~ "Infant",
+      home_age_group == "mfcc_toddler" ~ "Toddler",
+      home_age_group == "mfcc_preschool" ~ "Preschool"
+    )) |>
+ mutate(
+    poverty_rate = cut(
+      pr_f,
+      breaks = 3,
+      labels = c("low", "medium", "high"))
+  )
 ```
 
 -   I can modify the text in my plot to be more readable
@@ -389,7 +558,11 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: dvs-4-summarize
-
+# From Lab 3, Question 6
+teacher_evals_clean |>
+  summarize(
+    n_distinct(course_id),
+    n_distinct(teacher_id))
 ```
 
 -   Example using `across()`
@@ -405,14 +578,25 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: dvs-5-1
-
+# From Lab 3, Question 6
+teacher_evals_clean |>
+  summarize(
+    n_distinct(course_id),
+    n_distinct(teacher_id))
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dvs-5-2
-
+# From Lab 4, Question 5
+region_table <- ca_childcare |>
+  filter(study_year %in% c(2008, 2018)) |>
+  group_by (census_region, study_year) |>
+  summarize(median_income = median(mhi_2018)) |>
+  ungroup() |>
+  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "Year ") |>
+  arrange(desc('2018'))
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
