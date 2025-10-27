@@ -23,7 +23,6 @@ execute:
 ```{r}
 #| label: wd-1-csv-1
 # From Lab 2, Problem 1
-
 surveys <- read_csv(here::here("week_2", "surveys.csv"))
 ```
 
@@ -72,7 +71,14 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: wd-2-ex-2
-
+# From Lab 3, Question 5 Revised
+teacher_evals_clean <- teacher_evals |>
+  select(
+    !course_id,
+    !teacher_id, 
+    !question_no, 
+    !no_participants, 
+    !resp_share)
 ```
 
 -   Example selecting columns based on logical values (e.g., `starts_with()`, `ends_with()`, `contains()`, `where()`)
@@ -91,11 +97,10 @@ teacher_evals_clean <- teacher_evals |>
 # From Lab 3, Question 5
 teacher_evals_clean <- teacher_evals |>
   rename(sex = gender) |>
-  filter( no_participants > 10) |>
+  filter(no_participants > 10) |>
   mutate(
     teacher_id = as.character(teacher_id),
-    weekday =  as.character(weekday)
-  ) |>
+    weekday =  as.character(weekday)) |>
   select(
     course_id,
     teacher_id, 
@@ -130,26 +135,60 @@ region_table <- ca_childcare |>
 # Challenge 4
 ca_childcare <- counties |>
   filter(
-    state_name == "California"
-  ) |>
+    state_name == "California") |>
   left_join(
     y = childcare_costs,
-    by = join_by(county_fips_code == county_fips_code)
-  )
+    by = join_by(county_fips_code == county_fips_code))
 ```
 
 -   Character Example 2 (example must use functions from **stringr**)
 
 ```{r}
 #| label: wd-3-string
-
+# From Lab 5
+person1 <- person |>
+  left_join(
+    get_fit_now_member |>
+    rename(member_id = id),
+    by = join_by (name == name)) |>
+  left_join(
+    drivers_license,
+    by = join_by (license_id == id)) |>
+  left_join(
+    get_fit_now_check_in,
+    by = join_by (member_id == membership_id)) |>
+  mutate(
+    check_in_date = ymd(check_in_date)) |>
+  filter(
+    gender == "male",
+    str_detect(plate_number, pattern = "H42"),
+    membership_status == "gold",
+    str_detect(member_id, pattern = "48Z"))
 ```
 
 -   Date (example must use functions from **lubridate**)
 
 ```{r}
 #| label: wd-3-date
-
+# From Lab 5
+person1 <- person |>
+  left_join(
+    get_fit_now_member |>
+    rename(member_id = id),
+    by = join_by (name == name)) |>
+  left_join(
+    drivers_license,
+    by = join_by (license_id == id)) |>
+  left_join(
+    get_fit_now_check_in,
+    by = join_by (member_id == membership_id)) |>
+  mutate(
+    check_in_date = ymd(check_in_date)) |>
+  filter(
+    gender == "male",
+    str_detect(plate_number, pattern = "H42"),
+    membership_status == "gold",
+    str_detect(member_id, pattern = "48Z"))
 ```
 
 **WD-4: I can modify existing variables and create new variables in a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -221,7 +260,25 @@ teacher_evals_compare <- teacher_evals |>
 
 ```{r}
 #| label: wd-4-date
-
+# From Lab 5
+person1 <- person |>
+  left_join(
+    get_fit_now_member |>
+    rename(member_id = id),
+    by = join_by (name == name)) |>
+  left_join(
+    drivers_license,
+    by = join_by (license_id == id)) |>
+  left_join(
+    get_fit_now_check_in,
+    by = join_by (member_id == membership_id)) |>
+  mutate(
+    check_in_date = ymd(check_in_date)) |>
+  filter(
+    gender == "male",
+    str_detect(plate_number, pattern = "H42"),
+    membership_status == "gold",
+    str_detect(member_id, pattern = "48Z"))
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
@@ -232,41 +289,71 @@ teacher_evals_compare <- teacher_evals |>
 #| label: wd-5-left-ex-1
 # Challenge 4
 ca_childcare <- counties |>
-  filter(
-    state_name == "California"
-  ) |>
+  filter(state_name == "California") |>
   left_join(
     y = childcare_costs,
-    by = join_by(county_fips_code == county_fips_code)
-  )
+    by = join_by(county_fips_code))
 ```
 
 -   `right_join()` Example 1
 
 ```{r}
 #| label: wd-5-right
-
+# Challenge 4, Edited
+ca_childcare <- childcare_costs |>
+  right_join(
+    x = counties,
+    by = join_by(county_fips_code)) |>
+  filter(state_name == "California")
 ```
 
 -   `left_join()` **or** `right_join()` Example 2
 
 ```{r}
 #| label: wd-5-left-right-ex-2
-
+# From Lab 5
+person1 <- person |>
+  left_join(
+    get_fit_now_member |>
+    rename(member_id = id),
+    by = join_by (name == name)) |>
+  left_join(
+    drivers_license,
+    by = join_by (license_id == id)) |>
+  left_join(
+    get_fit_now_check_in,
+    by = join_by (member_id == membership_id)) |>
+  mutate(
+    check_in_date = ymd(check_in_date)) |>
+  filter(
+    gender == "male",
+    str_detect(plate_number, pattern = "H42"),
+    membership_status == "gold",
+    str_detect(member_id, pattern = "48Z"))
 ```
 
 -   `inner_join()` Example 1
 
 ```{r}
 #| label: wd-5-inner-ex-1
-
+# Challenge 4, Edited
+ca_childcare <- counties |>
+  filter(state_name == "California") |>
+  inner_join(
+    y = childcare_costs,
+    by = join_by(county_fips_code))
 ```
 
 -   `inner_join()` Example 2
 
 ```{r}
 #| label: wd-5-inner-ex-2
-
+# From Lab 5, Edited
+person1 <- person |>
+  inner_join(
+    get_fit_now_member |>
+    rename(member_id = id),
+    by = join_by (name == name))
 ```
 
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
@@ -275,14 +362,24 @@ ca_childcare <- counties |>
 
 ```{r}
 #| label: wd-6-semi
-
+# From Lab 5, Edited
+person1 <- person |>
+  semi_join(
+    get_fit_now_member |>
+    rename(member_id = id),
+    by = join_by (name == name))
 ```
 
 -   `anti_join()`
 
 ```{r}
 #| label: wd-6-anti
-
+# Lab 5, Edited
+suspectinterview <- person |>
+  filter(
+    name == "Miranda Priestly") |>
+  anti_join(
+    interview, by = c("id" = "person_id"))
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
@@ -357,28 +454,53 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: r-2-1
-# Challenge 4
-ca_childcare <- ca_childcare |> 
-  mutate(county_name = str_remove(county_name, " County")) |>
-  mutate(census_region = fct_collapse(
-    .f = county_name,
-    "superior" = superior_counties,
-    "northcoast" = north_coast_counties,
-    "sanfran" = san_fran_counties,
-    "northsanjoaquin" = n_san_joaquin_counties,
-    "centralcoast" = central_coast_counties,
-    "southsanjoaquin" = s_san_joaquin_counties,
-    "inland" = inland_counties,
-    "la" = la_county,
-    "orange county" = orange_county,
-    "sandiegoimperial" = san_diego_imperial_counties
-  ))
+# Lab 4, Question 8
+ca_childcare |>
+  filter() |>
+  ggplot(aes(x = mhi_2018, y = mfcc_infant)) +
+  theme_light() +
+  geom_point(alpha = 0.5, color = "plum") +
+  geom_smooth(method = "lm", se = FALSE, color = "mediumorchid4") +
+  labs(
+    title = "Median Income (per Household) vs. Weekly Infant Childcare Cost (in California)",
+    x = "Median Household Income",
+    y = "Median Weekly Infant Cost") +
+  scale_y_continuous(labels = scales:: label_currency(prefix = "$"))+
+  scale_x_continuous(labels = scales:: label_currency(prefix = "$"))
 ```
 
 -   Example of **dplyr** pipeline
 
 ```{r}
 #| label: r-2-2
+# Lab 4, Question 8
+ca_childcare |>
+  filter() |>
+  ggplot(aes(x = mhi_2018, y = mfcc_infant)) +
+  theme_light() +
+  geom_point(alpha = 0.5, color = "plum") +
+  geom_smooth(method = "lm", se = FALSE, color = "mediumorchid4") +
+  labs(
+    title = "Median Income (per Household) vs. Weekly Infant Childcare Cost (in California)",
+    x = "Median Household Income",
+    y = "Median Weekly Infant Cost") +
+  scale_y_continuous(labels = scales:: label_currency(prefix = "$"))+
+  scale_x_continuous(labels = scales:: label_currency(prefix = "$"))
+```
+
+-   Example of function formatting
+
+```{r}
+#| label: r-2-3
+
+```
+
+**R-3: I can write robust programs that are resistant to changes in inputs.**
+
+-   Example (any context)
+
+```{r}
+#| label: r-3-example
 # From Lab 3, Question 5
 teacher_evals_clean <- teacher_evals |>
   rename(sex = gender) |>
@@ -400,22 +522,6 @@ teacher_evals_clean <- teacher_evals |>
     sex )
 ```
 
--   Example of function formatting
-
-```{r}
-#| label: r-2-3
-
-```
-
-**R-3: I can write robust programs that are resistant to changes in inputs.**
-
--   Example (any context)
-
-```{r}
-#| label: r-3-example
-
-```
-
 -   Example (function stops)
 
 ```{r}
@@ -431,14 +537,42 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: dvs-1-num
-
+# Lab 4, Question 8
+ca_childcare |>
+  filter() |>
+  ggplot(aes(x = mhi_2018, y = mfcc_infant)) +
+  theme_light() +
+  geom_point(alpha = 0.5, color = "plum") +
+  geom_smooth(method = "lm", se = FALSE, color = "mediumorchid4") +
+  labs(
+    title = "Median Income (per Household) vs. Weekly Infant Childcare Cost (in California)",
+    x = "Median Household Income",
+    y = "Median Weekly Infant Cost") +
+  scale_y_continuous(labels = scales:: label_currency(prefix = "$"))+
+  scale_x_continuous(labels = scales:: label_currency(prefix = "$"))
 ```
 
 -   At least one numeric variable and one categorical variable
 
 ```{r}
 #| label: dvs-2-num-cat
-
+# Lab 2, Question 15
+ggplot(data = surveys,
+    mapping = aes(x = species, y = weight))+
+  geom_boxplot(outliers = FALSE)+
+  geom_jitter(color= "pink", alpha = 0.5)+
+  theme(axis.text.x = element_text(angle = 4))+
+  labs(
+    title = "Distribution of Weights",
+    x = "Species",
+    y = "Weight in Grams")+
+  theme(
+    plot.title = element_text(size = rel(2)),
+    panel.border = element_rect(linetype = "dashed", color = "gray"),
+    legend.position = "inside",
+    legend.justification = c("right", "top"),
+    legend.direction = "horizontal",
+    legend.key.size = unit(.5, "cm"))
 ```
 
 -   At least two categorical variables
@@ -461,7 +595,23 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: dvs-2-ex-1
-
+# Lab 2, Question 15
+ggplot(data = surveys,
+    mapping = aes(x = species, y = weight))+
+  geom_boxplot(outliers = FALSE)+
+  geom_jitter(color= "pink", alpha = 0.5)+
+  theme(axis.text.x = element_text(angle = 4))+
+  labs(
+    title = "Distribution of Weights",
+    x = "Species",
+    y = "Weight in Grams")+
+  theme(
+    plot.title = element_text(size = rel(2)),
+    panel.border = element_rect(linetype = "dashed", color = "gray"),
+    legend.position = "inside",
+    legend.justification = c("right", "top"),
+    legend.direction = "horizontal",
+    legend.key.size = unit(.5, "cm"))
 ```
 
 -   I can modify my colors to be accessible to anyone's eyes
@@ -512,14 +662,56 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: dvs-2-ex-4
-
+# Lab 4, Question 7
+ggplot(data = center_childcare,
+       aes( x = study_year, y = median_cost, color = census_region)) +
+  geom_point(alpha = 0.5, size = 1.5) +
+  geom_smooth() +
+  facet_wrap(~age_group) +
+  theme_bw(base_size = 10) +
+  labs(
+    title = "Weekly Median price for Center-Based Childcare ($)",
+    x = "Study Year",
+    color = "California Region",
+    y = ""
+  ) +
+  theme(axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        aspect.ratio = 1,
+        plot.title = element_text(size = 10),  
+        legend.text = element_text(size = 7),  
+        legend.title = element_text(size = 8),
+        strip.text = element_text(size = 9),
+        legend.spacing.y = unit(0.001, "lines")) +
+  scale_color_manual(values = colorRampPalette(brewer.pal(7, "Accent"))(10))
 ```
 
 -   I can reorder my legend to align with the colors in my plot
 
 ```{r}
 #| label: dvs-2-ex-5
-
+# Lab 4, Question 7
+ggplot(data = center_childcare,
+       aes( x = study_year, y = median_cost, color = census_region)) +
+  geom_point(alpha = 0.5, size = 1.5) +
+  geom_smooth() +
+  facet_wrap(~age_group) +
+  theme_bw(base_size = 10) +
+  labs(
+    title = "Weekly Median price for Center-Based Childcare ($)",
+    x = "Study Year",
+    color = "California Region",
+    y = ""
+  ) +
+  theme(axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        aspect.ratio = 1,
+        plot.title = element_text(size = 10),  
+        legend.text = element_text(size = 7),  
+        legend.title = element_text(size = 8),
+        strip.text = element_text(size = 9),
+        legend.spacing.y = unit(0.001, "lines")) +
+  scale_color_manual(values = colorRampPalette(brewer.pal(7, "Accent"))(10))
 ```
 
 **DVS-3: I show creativity in my visualizations**
@@ -528,14 +720,47 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: dvs-3-1-ex-1
-
+# Lab 4, Question 8
+ca_childcare |>
+  filter() |>
+  ggplot(aes(x = mhi_2018, y = mfcc_infant)) +
+  theme_light() +
+  geom_point(alpha = 0.5, color = "plum") +
+  geom_smooth(method = "lm", se = FALSE, color = "mediumorchid4") +
+  labs(
+    title = "Median Income (per Household) vs. Weekly Infant Childcare Cost (in California)",
+    x = "Median Household Income",
+    y = "Median Weekly Infant Cost") +
+  scale_y_continuous(labels = scales:: label_currency(prefix = "$"))+
+  scale_x_continuous(labels = scales:: label_currency(prefix = "$"))
 ```
 
 -   I can use non-standard colors (Example 2)
 
 ```{r}
 #| label: dvs-3-1-ex-2
-
+# Lab 4, Question 7
+ggplot(data = center_childcare,
+       aes( x = study_year, y = median_cost, color = census_region)) +
+  geom_point(alpha = 0.5, size = 1.5) +
+  geom_smooth() +
+  facet_wrap(~age_group) +
+  theme_bw(base_size = 10) +
+  labs(
+    title = "Weekly Median price for Center-Based Childcare ($)",
+    x = "Study Year",
+    color = "California Region",
+    y = ""
+  ) +
+  theme(axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        aspect.ratio = 1,
+        plot.title = element_text(size = 10),  
+        legend.text = element_text(size = 7),  
+        legend.title = element_text(size = 8),
+        strip.text = element_text(size = 9),
+        legend.spacing.y = unit(0.001, "lines")) +
+  scale_color_manual(values = colorRampPalette(brewer.pal(7, "Accent"))(10))
 ```
 
 -   I can use annotations (e.g., `geom_text()`)
@@ -635,7 +860,14 @@ region_table <- ca_childcare |>
 
 ```{r}
 #| label: dvs-7-ex-2
-
+# From Lab 4, Question 5
+region_table <- ca_childcare |>
+  filter(study_year %in% c(2008, 2018)) |>
+  group_by (census_region, study_year) |>
+  summarize(median_income = median(mhi_2018)) |>
+  ungroup() |>
+  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "Year ") |>
+  arrange(desc('2018'))
 ```
 
 ## Program Efficiency
@@ -646,7 +878,25 @@ region_table <- ca_childcare |>
 
 ```{r}
 #| label: pe-1-one-call
-
+# From Lab 3, Question 5
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter( no_participants > 10) |>
+  mutate(
+    teacher_id = as.character(teacher_id),
+    weekday =  as.character(weekday)
+  ) |>
+  select(
+    course_id,
+    teacher_id, 
+    question_no, 
+    no_participants, 
+    resp_share, 
+    SET_score_avg, 
+    percent_failed_cur, 
+    academic_degree, 
+    seniority, 
+    sex )
 ```
 
 -   using `across()`
@@ -715,7 +965,25 @@ region_table <- ca_childcare |>
 
 ```{r}
 #| label: pe-4-1
-
+# From Lab 3, Question 5
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter( no_participants > 10) |>
+  mutate(
+    teacher_id = as.character(teacher_id),
+    weekday =  as.character(weekday)
+  ) |>
+  select(
+    course_id,
+    teacher_id, 
+    question_no, 
+    no_participants, 
+    resp_share, 
+    SET_score_avg, 
+    percent_failed_cur, 
+    academic_degree, 
+    seniority, 
+    sex )
 ```
 
 -   I can connect a data wrangling pipeline into a `ggplot()`
@@ -749,14 +1017,21 @@ region_table <- ca_childcare |>
 
 ```{r}
 #| label: dsm-2-1
-
+# Lab 4, Question 9
+reg_mod1 <- lm( data = ca_childcare,  mfcc_infant~mhi_2018)
+summary(reg_mod1)
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dsm-2-2
+# Challenge 3, Question 3
+chi_test_table <- 
+  table(teacher_evals_compare$set_level,
+        teacher_evals_compare$sen_level)
 
+chisq.test(chi_test_table)
 ```
 
 -   Example 3
