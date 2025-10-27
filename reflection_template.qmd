@@ -10,7 +10,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a B+.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -72,6 +72,7 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-2-ex-2
 # From Lab 3, Question 5 Revised
+# Simply showed how I would remove these columns instead of selecting them, to show this action
 teacher_evals_clean <- teacher_evals |>
   select(
     !course_id,
@@ -300,6 +301,7 @@ ca_childcare <- counties |>
 ```{r}
 #| label: wd-5-right
 # Challenge 4, Edited
+# Changed my pipeline to be a right join instead
 ca_childcare <- childcare_costs |>
   right_join(
     x = counties,
@@ -337,6 +339,7 @@ person1 <- person |>
 ```{r}
 #| label: wd-5-inner-ex-1
 # Challenge 4, Edited
+# Changed my pipeline to be an inner join instead
 ca_childcare <- counties |>
   filter(state_name == "California") |>
   inner_join(
@@ -349,6 +352,7 @@ ca_childcare <- counties |>
 ```{r}
 #| label: wd-5-inner-ex-2
 # From Lab 5, Edited
+# Changed my pipeline to be an inner join instead
 person1 <- person |>
   inner_join(
     get_fit_now_member |>
@@ -363,6 +367,7 @@ person1 <- person |>
 ```{r}
 #| label: wd-6-semi
 # From Lab 5, Edited
+# Changed my pipeline to be a semi join instead
 person1 <- person |>
   semi_join(
     get_fit_now_member |>
@@ -375,6 +380,7 @@ person1 <- person |>
 ```{r}
 #| label: wd-6-anti
 # Lab 5, Edited
+# Changed my pipeline to be an anti join instead
 suspectinterview <- person |>
   filter(
     name == "Miranda Priestly") |>
@@ -625,37 +631,32 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-2-ex-3
-# From Challenge 4, childcare_vs_poverty <- ca_childcare |>
+# From Challenge 4
+childcare_vs_poverty <- ca_childcare |>
   select(mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_preschool, mfcc_toddler, pr_f) |>
   pivot_longer(
     cols = starts_with("mc"),
     names_to = "center_age_group",
-    values_to = "median_center_cost"
-  ) |>
+    values_to = "median_center_cost") |>
   mutate(
     center_age_group = case_when(
       center_age_group == "mc_infant" ~ "Infant",
       center_age_group == "mc_toddler" ~ "Toddler",
-      center_age_group == "mc_preschool" ~ "Preschool"
-    )
-  ) |>
+      center_age_group == "mc_preschool" ~ "Preschool")) |>
   pivot_longer(
     cols = starts_with("mfcc"),
     names_to = "home_age_group",
-    values_to = "median_home_cost"
-  ) |>
+    values_to = "median_home_cost") |>
   mutate(
      home_age_group = case_when(
       home_age_group == "mfcc_infant" ~ "Infant",
       home_age_group == "mfcc_toddler" ~ "Toddler",
-      home_age_group == "mfcc_preschool" ~ "Preschool"
-    )) |>
+      home_age_group == "mfcc_preschool" ~ "Preschool")) |>
  mutate(
     poverty_rate = cut(
       pr_f,
       breaks = 3,
-      labels = c("low", "medium", "high"))
-  )
+      labels = c("low", "medium", "high")))
 ```
 
 -   I can modify the text in my plot to be more readable
@@ -673,8 +674,7 @@ ggplot(data = center_childcare,
     title = "Weekly Median price for Center-Based Childcare ($)",
     x = "Study Year",
     color = "California Region",
-    y = ""
-  ) +
+    y = "") +
   theme(axis.text.x = element_text(size = 6),
         axis.text.y = element_text(size = 6),
         aspect.ratio = 1,
@@ -1043,16 +1043,18 @@ chisq.test(chi_test_table)
 
 ## Revising My Thinking
 
-<!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
-
-<!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
+I have revised my thinking by getting a lot more mindful about chunking functions and focusing on concise code instead of simply one that works. Grouping mutate actions and filter actions, for instance, make it both easier for me to have concise code that I can skim through to look for errors or edit, and makes it easier for others to understand my code. Thus, I have revised my approach to writing code, and go back and edit my codes to ensure efficiency.
 
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
+I have extended my thinking by really considering whether my color/ personal changes to my plots are helping the reader, or simply adding fun changes. At the start of this course, I would alter colors and plot features simply to test if I remembered the code. However, now, I really consider which changes would help the reader, and look at it more from a Data Analyst or Statistician view, extending my thinking and contemplating what aspects of the graph are less clear, could be clearer, or any edits I could make to overall help highlight the important trends present.
+
 ## Peer Support & Collaboration
 
-<!-- Include an image or a description of feedback you gave that you are proud of (either in a peer review or in Discord). -->
+Peer Review I gave that I am proud of:
 
-<!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
+![](images/Screen Shot 2025-10-26 at 10.48.17 PM.png){width="399"}
+
+![](images/Screen Shot 2025-10-26 at 10.48.26 PM.png){width="368"}I think I grew as a collaborator by being a lot more open minded that oftentimes there are multiple different ways to approach a problem, or perform an action, most of which are not better or worse than the others. This has helped my thinking and understanding in the course, and really consider the various methods I could take to perform an action, and think whether a certain one is most helpful.
