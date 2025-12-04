@@ -10,7 +10,9 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a B.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a A-.
+
+In every lab and challenge in this class, I have carefully reviewed and revised my labs to ensure I learn from my mistakes and gain a deeper understanding of the content, taking more time on the content I struggle with. I have also carefully read over Dr. T's corrections from the midterm portfolio, and have made efforts to fix every single correction I was given. On top of that, I have carefully chosen code for every single piece of criteria, explaining any revisions I made, and ensuring the code I have provided is sufficiently exemplifying my knowledge of the content, and that my code is efficient.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -69,7 +71,7 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-2-ex-2
 # From Lab 3, Question 5 Revised
-# Simply showed how I would remove these columns instead of selecting them, to show this action
+# Simply changed it to remove these columns instead of selecting them, to show this action
 teacher_evals_clean <- teacher_evals |>
   select(
     -course_id,
@@ -84,14 +86,14 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-2-ex-3
 #From Lab 3, Question 5 Revised
+# Changed it to select columns that contain "id", to show this action
 teacher_evals_clean <- teacher_evals |>
   rename(sex = gender) |>
   filter( no_participants > 10) |>
   mutate(
     across(.cols = c(teacher_id, weekday), 
            .fns = ~as.character(.x))) |>
-  select(
-    course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex )
+  select(contains("id"))
 ```
 
 **WD-3: I can filter rows from a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -168,7 +170,7 @@ person1 <- person |>
 
 ```{r}
 #| label: wd-3-date
-# From Lab 5, Revised
+# From Lab 5, Revised, originally had filtered based on other factors, so I added this one in
 person1 <- person |>
   left_join(
     get_fit_now_member |>
@@ -463,9 +465,9 @@ The following assignments satisfy the above criteria:
 
 -   Example 1: Lab 2
 -   Example 2: Challenge 3
--   Example 3: Lab 8 \*\*\*
--   Example 4: Challenge 4 \*\*\*
--   Example 5:
+-   Example 3: Lab 4
+-   Example 4: Lab 8
+-   Example 5: Lab 9
 
 **R-2: I can write well documented and tidy code.**
 
@@ -518,7 +520,16 @@ center_childcare <- ca_childcare |>
 
 ```{r}
 #| label: r-2-3
-
+# From Lab 8, Problem 1
+rescale_01 <- function(x){
+  if(!is.numeric(x)){
+    stop("Please provide a numeric input for the x argument.")
+  }
+  if(length(x) == 1){
+    stop("Please provide a vector of at least length 2")
+  }
+  return(x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+}
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
@@ -543,7 +554,16 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: r-3-function-stops
-
+# From Lab 8, Problem 1
+rescale_01 <- function(x){
+  if(!is.numeric(x)){
+    stop("Please provide a numeric input for the x argument.")
+  }
+  if(length(x) == 1){
+    stop("Please provide a vector of at least length 2")
+  }
+  return(x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+}
 ```
 
 ## Data Visualization & Summarization
@@ -638,9 +658,7 @@ ggplot(data = center_childcare,
         aspect.ratio = 1,
         plot.title = element_text(size = 10),  
         legend.text = element_text(size = 7),  
-        legend.title = element_text(size = 8),
-        strip.text = element_text(size = 9),
-        legend.spacing.y = unit(0.001, "lines")) +
+        legend.title = element_text(size = 8)) +
   scale_color_manual(values = colorRampPalette(brewer.pal(7, "Accent"))(10))
 ```
 
@@ -673,27 +691,20 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-2-ex-2
-# Lab 4, Question 7
-ggplot(data = center_childcare,
-       aes( x = study_year, y = median_cost, color = census_region)) +
-  geom_point(alpha = 0.5, size = 1.5) +
-  geom_smooth() +
-  facet_wrap(~age_group) +
-  theme_bw(base_size = 10) +
+# Lab 4, Question 8, Revised
+# Changed colors to be accessible to anyone's eyes, searched up which colors are best, blue and orange was said to be distinguishable even for color blind viewers
+ca_childcare |>
+  filter() |>
+  ggplot(aes(x = mhi_2018, y = mfcc_infant)) +
+  theme_light() +
+  geom_point(alpha = 0.5, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "orange2") +
   labs(
-    title = "Weekly Median price for Center-Based Childcare ($)",
-    x = "Study Year",
-    color = "California Region",
-    y = "") +
-  theme(axis.text.x = element_text(size = 6),
-        axis.text.y = element_text(size = 6),
-        aspect.ratio = 1,
-        plot.title = element_text(size = 10),  
-        legend.text = element_text(size = 7),  
-        legend.title = element_text(size = 8),
-        strip.text = element_text(size = 9),
-        legend.spacing.y = unit(0.001, "lines")) +
-  scale_color_manual(values = colorRampPalette(brewer.pal(7, "Accent"))(10))
+    title = "Median Income (per Household) vs. Weekly Infant Childcare Cost (in California)",
+    x = "Median Household Income",
+    y = "Median Weekly Infant Cost") +
+  scale_y_continuous(labels = scales:: label_currency(prefix = "$"))+
+  scale_x_continuous(labels = scales:: label_currency(prefix = "$"))
 ```
 
 -   I can modify my plot titles to clearly communicate the data context
@@ -717,9 +728,7 @@ ggplot(data = center_childcare,
         aspect.ratio = 1,
         plot.title = element_text(size = 10),  
         legend.text = element_text(size = 7),  
-        legend.title = element_text(size = 8),
-        strip.text = element_text(size = 9),
-        legend.spacing.y = unit(0.001, "lines")) +
+        legend.title = element_text(size = 8)) +
   scale_color_manual(values = colorRampPalette(brewer.pal(7, "Accent"))(10))
 ```
 
@@ -744,9 +753,7 @@ ggplot(data = center_childcare,
         aspect.ratio = 1,
         plot.title = element_text(size = 10),  
         legend.text = element_text(size = 7),  
-        legend.title = element_text(size = 8),
-        strip.text = element_text(size = 9),
-        legend.spacing.y = unit(0.001, "lines")) +
+        legend.title = element_text(size = 8)) +
   scale_color_manual(values = colorRampPalette(brewer.pal(7, "Accent"))(10))
 ```
 
@@ -754,9 +761,14 @@ ggplot(data = center_childcare,
 
 ```{r}
 #| label: dvs-2-ex-5
-# Lab 4, Question 7
-ggplot(data = center_childcare,
-       aes( x = study_year, y = median_cost, color = census_region)) +
+# Lab 4, Question 7, Revised
+# Fixed to ensure ordered legend
+center_childcare |>
+  arrange(study_year) |>
+  mutate(census_region = 
+           factor(census_region,
+            levels = unique(census_region))) |>
+  ggplot(aes( x = study_year, y = median_cost, color = census_region)) +
   geom_point(alpha = 0.5, size = 1.5) +
   geom_smooth() +
   facet_wrap(~age_group) +
@@ -771,9 +783,7 @@ ggplot(data = center_childcare,
         aspect.ratio = 1,
         plot.title = element_text(size = 10),  
         legend.text = element_text(size = 7),  
-        legend.title = element_text(size = 8),
-        strip.text = element_text(size = 9),
-        legend.spacing.y = unit(0.001, "lines")) +
+        legend.title = element_text(size = 8)) +
   scale_color_manual(values = colorRampPalette(brewer.pal(7, "Accent"))(10))
 ```
 
@@ -863,6 +873,23 @@ fish_clean <-fish |>
 
 ```{r}
 #| label: dvs-3-3
+# Lab 10, Problem 13
+ci_results |> 
+  mutate(
+    row_index = row_number(),
+    color_group = ifelse(cover == 1, "palegreen3", "indianred3")) |>
+  ggplot(aes(x = estimate, y = row_index)) +
+  geom_errorbar(
+    aes(xmin = conf.low, xmax = conf.high, colour = color_group),
+    width = 0.2) +
+  scale_colour_identity() +  
+  labs(
+    title = "95% Confidence Intervals",
+    subtitle = "Observing how many capture the real slope of 0.5",
+    x = "Slope Estimates",
+    y = "Simulation Number") +
+  theme_light() +
+  theme(legend.position = "none")
 
 ```
 
@@ -883,10 +910,13 @@ teacher_evals_clean |>
 
 ```{r}
 #| label: dvs-4-across
-# From Lab 7, Problem 1
-table_q1 <- fish |>
-  summarise(
-    across(everything(), ~sum(is.na(.x))))
+#From Lab 3, Question 5
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter( no_participants > 10) |>
+  mutate(
+    across(.cols = c(teacher_id, weekday), 
+           .fns = ~as.character(.x)))
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -1008,21 +1038,114 @@ df <- surveys |>
 
 ```{r}
 #| label: dvs-7-ex-1
-
+# From Lab 9, Question 6
+evals |>
+  filter(no_participants > 10) |>
+  select(
+    academic_degree, 
+    seniority, 
+    sex ) |>
+  map_at(.at = c("academic_degree", "seniority", "sex"), .f = convert_to_factor) |>
+  bind_cols() |>
+  rename(
+    `Academic Degree` = academic_degree,
+    Sex = sex) |>
+  mutate(
+    `Academic Degree` = fct_recode(
+      `Academic Degree`,
+      "No Degree" = "no_dgr",
+      "Masters"   = "ma",
+      "Doctorate" = "dr",
+      "Tenured Professor" = "prof"),
+    Seniority = case_when(
+      seniority %in% (0:5) ~ "Junior",
+      seniority %in% (4:9) ~ "Senior",
+      seniority %in% (8:12) ~ "Very Senior"),
+    Sex = fct_recode(
+      Sex,
+      "Female" = "female",
+      "Male"   = "male")) |>
+  pivot_longer(
+    cols = c(`Academic Degree`, Seniority, Sex),
+    names_to = "Demographic",
+    values_to = "Group") |>
+  count(Demographic, Group) |>
+  group_by(Demographic) |>
+  mutate("%" = n *100 / sum(n)) |>
+  rename("Count" = n)|>
+  ungroup() |>
+  kable(
+    format = "html",
+    caption = "Examining Counts/Proportions of Demographics for Professors in a University in Poland",
+    booktabs = TRUE,
+    vline = TRUE) |>
+  row_spec(1:4, bold = TRUE, color = "white", background = "thistle") |>
+  row_spec(5:7, bold = TRUE, color = "white", background = "palegreen3") |>
+  row_spec(8:9, bold = TRUE, color = "white", background = "skyblue2") |>
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = "striped") |>
+  column_spec(1, bold = T)|>
+  collapse_rows(
+    columns = 1,
+    valign = "middle")
 ```
 
 -   I can modify the layout of my table to be more readable (e.g., `pivot_longer()` or `pivot_wider()`)
 
 ```{r}
 #| label: dvs-7-ex-2
-# From Lab 4, Question 5
-region_table <- ca_childcare |>
-  filter(study_year %in% c(2008, 2018)) |>
-  group_by (census_region, study_year) |>
-  summarize(median_income = median(mhi_2018)) |>
+# From Lab 9, Question 6
+evals |>
+  filter(no_participants > 10) |>
+  select(
+    academic_degree, 
+    seniority, 
+    sex ) |>
+  map_at(.at = c("academic_degree", "seniority", "sex"), .f = convert_to_factor) |>
+  bind_cols() |>
+  rename(
+    `Academic Degree` = academic_degree,
+    Sex = sex) |>
+  mutate(
+    `Academic Degree` = fct_recode(
+      `Academic Degree`,
+      "No Degree" = "no_dgr",
+      "Masters"   = "ma",
+      "Doctorate" = "dr",
+      "Tenured Professor" = "prof"),
+    Seniority = case_when(
+      seniority %in% (0:5) ~ "Junior",
+      seniority %in% (4:9) ~ "Senior",
+      seniority %in% (8:12) ~ "Very Senior"),
+    Sex = fct_recode(
+      Sex,
+      "Female" = "female",
+      "Male"   = "male")) |>
+  pivot_longer(
+    cols = c(`Academic Degree`, Seniority, Sex),
+    names_to = "Demographic",
+    values_to = "Group") |>
+  count(Demographic, Group) |>
+  group_by(Demographic) |>
+  mutate("%" = n *100 / sum(n)) |>
+  rename("Count" = n)|>
   ungroup() |>
-  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "Year ") |>
-  arrange(desc('2018'))
+  kable(
+    format = "html",
+    caption = "Examining Counts/Proportions of Demographics for Professors in a University in Poland",
+    booktabs = TRUE,
+    vline = TRUE) |>
+  row_spec(1:4, bold = TRUE, color = "white", background = "thistle") |>
+  row_spec(5:7, bold = TRUE, color = "white", background = "palegreen3") |>
+  row_spec(8:9, bold = TRUE, color = "white", background = "skyblue2") |>
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = "striped") |>
+  column_spec(1, bold = T)|>
+  collapse_rows(
+    columns = 1,
+    valign = "middle")
 ```
 
 ## Program Efficiency
@@ -1049,14 +1172,30 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-1-across
-
+# From Lab 8, Problem 1
+rescale_column <- function (df, cols){
+  if (!is.data.frame(df)) {
+    stop("`df` must be a data frame.")
+  }
+  df |>
+    mutate(
+      across(.cols = {{cols}}, 
+             .fns = ~rescale_01(.x)))
+}
 ```
 
 -   using functions from the `map()` family
 
 ```{r}
 #| label: pe-1-map-1
-
+# From Lab 9, Question 6
+evals |>
+  filter(no_participants > 10) |>
+  select(
+    academic_degree, 
+    seniority, 
+    sex ) |>
+  map_at(.at = c("academic_degree", "seniority", "sex"), .f = convert_to_factor) 
 ```
 
 **PE-2: I can write functions to reduce repetition in my code.**
@@ -1065,44 +1204,91 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-2-1
-
+# From Lab 9, Question 4
+convert_to_factor <- function(col) {
+  col = as.factor({{col}})
+}
 ```
 
 -   Example 2: Function that operates on data frames
 
 ```{r}
 #| label: pe-2-2
-
+# From Lab 8, Question 3
+plot_function <- function(df, x, y){
+  if (!is.data.frame(df)) {
+    stop("`df` must be a data frame.")
+  }
+  x_label <- stringr::str_to_title(as_label(ensym(x)))
+  y_label <- stringr::str_to_title(as_label(ensym(y)))
+  
+    ggplot(df, aes(x = {{ x }}, fill = {{ y }})) +
+    geom_bar() +
+    theme_minimal() +
+    labs(
+      title = glue::glue("Distribution of {x_label} by {y_label}"),
+      x = x_label,
+      y = "Count",
+      fill = y_label)
+}
 ```
 
 -   Example 3: Function that operates on vectors *or* data frames
 
 ```{r}
 #| label: pe-2-3
-
+# From Lab 8, Question 2
+pivot_table <- function(df, row, col){
+  if (!is.data.frame(df)) {
+    stop("`df` must be a data frame.")
+  }
+  df |>
+    count({{col}}, {{row}}) |>
+    pivot_wider(
+      names_from = {{col}},
+      values_from = n,
+      values_fill = 0) |>
+    janitor::adorn_totals(c("row", "col"))
+}
 ```
 
-**PE-3:I can use iteration to reduce repetition in my code.**
+**PE-3: I can use iteration to reduce repetition in my code.**
 
 -   using `across()`
 
 ```{r}
 #| label: pe-3-across
-
+# From Lab 7, Problem 1
+table_q1 <- fish |>
+  summarise(
+    across(everything(), ~sum(is.na(.x))))
 ```
 
 -   using a `map()` function with **one** input (e.g., `map()`, `map_chr()`, `map_dbl()`, etc.)
 
 ```{r}
 #| label: pe-3-map-1
-
+# From Lab 9, Question 2
+surveys |>
+  map_chr(.f = ~class(.x)) |>
+  enframe(
+    name = "Variable",
+    value = "Data Type") |>
+  arrange(`Data Type`) |>
+  kable(
+    format = "simple",
+    caption = "Data Types of Variables")
 ```
 
 -   using a `map()` function with **more than one** input (e.g., `map_2()` or `pmap()`)
 
 ```{r}
 #| label: pe-3-map-2
-
+# From Lab 9, Question 4
+evals |>
+  map_at(.at = c("weekday", "academic_degree", "time_of_day", "sex"), 
+         .f = convert_to_factor) |>
+  bind_cols()
 ```
 
 **PE-4: I can use modern tools when carrying out my analysis.**
@@ -1165,14 +1351,16 @@ fish_clean <-fish |>
 
 ```{r}
 #| label: dsm-1-1
-
+# From Lab 9, Question 4
+x<-runif(100, min = 0, max=1)
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dsm-1-2
-
+# From Lab 9, Question 4
+ep<- rnorm(100,mean = 0, sd = 1)
 ```
 
 **DSSM-2: I can conduct common statistical analyses in R.**
@@ -1209,13 +1397,13 @@ summary(model_lm)
 
 ## Revising My Thinking
 
-I have revised my thinking by getting a lot more mindful about chunking functions and focusing on concise code instead of simply one that works. Grouping mutate actions and filter actions, for instance, make it both easier for me to have concise code that I can skim through to look for errors or edit, and makes it easier for others to understand my code. Thus, I have revised my approach to writing code, and go back and edit my codes to ensure efficiency.
+I have revised my thinking by getting a lot more mindful about grouping functions and focusing on concise code instead of simply one that works. Grouping mutate actions and filter actions, for instance, make it both easier for me to have concise code that I can skim through to look for errors or edit, and makes it easier for others to understand my code. Thus, I have revised my approach to writing code, and go back and edit my codes to ensure efficiency, and work to group actions together when possible.
 
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
-I have extended my thinking by really considering whether my color/ personal changes to my plots are helping the reader, or simply adding fun changes. At the start of this course, I would alter colors and plot features simply to test if I remembered the code. However, now, I really consider which changes would help the reader, and look at it more from a Data Analyst or Statistician view, extending my thinking and contemplating what aspects of the graph are less clear, could be clearer, or any edits I could make to overall help highlight the important trends present.
+I have extended my thinking by really considering whether my color/ personal changes to my plots are helping the reader, or simply adding fun changes. At the start of this course, I would alter colors and plot features simply to test if I remembered the code, or based on my personal color preferences. However, now, I really consider which changes would help the reader, and look at it more from a Data Analyst or Statistician view, extending my thinking and contemplating what aspects of the graph are less clear, could be clearer, or any edits I could make to overall help highlight the important trends present. I also now consider if certain color combinations make the plots harder to understand, or emphasize the wrong parts of my plots, working to make the plots easily understood regardless of audience.
 
 ## Peer Support & Collaboration
 
@@ -1225,4 +1413,4 @@ Peer Review I gave that I am proud of:
 
 ![](images/Screen%20Shot%202025-10-26%20at%2010.48.26%20PM.png){width="200"}
 
-I think I grew as a collaborator by being a lot more open minded that oftentimes there are multiple different ways to approach a problem, or perform an action, most of which are not better or worse than the others. This has helped my thinking and understanding in the course, and really consider the various methods I could take to perform an action, and think whether a certain one is most helpful.
+I think I grew as a collaborator by being a lot more open minded that oftentimes there are multiple different ways to approach a problem, or perform an action, most of which are not better or worse than the others. This has helped my thinking and understanding in the course, and really consider the various methods I could take to perform an action. It has also helped me compare and contrast methods or approaches and consider which is more concise, more easily understood by other viewers, or most helpful in performing the action required, or if they are simply different ways of performing the same function.
