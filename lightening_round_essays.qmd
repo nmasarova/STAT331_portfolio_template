@@ -6,16 +6,17 @@ editor: visual
 
 **Answer each of the following questions with *one sentence* including a brief explanation.**
 
-1. Finish the sentence with another student’s name: "If [Name of Student] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
+1.  Finish the sentence with another student’s name: "If \[Name of Student\] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.\
+    If Erica doesn't earn an A, then nobody should because I have. seen her commit so much time to this class, always asking clarifying questions when she needs to, staying in class the whole time to take advantage of Dr. T's and the TA's support, never missing class, and she would always start the labs earlier than most, starting them with sufficient time to struggle through them and really ensure they're of good quality.
 
+2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.\
+    The most difficult part for me was remembering the various functions we have learned/ have access to and what the input to them should be. The readings were a bit heavy and gave so many functions that were difficult to remember, and it was hard to refer back to readings to figure this out since they were pretty extensive. I also struggled a bit with data wrangling and pivots.
 
-2. What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
+3.  What was the easiest part of the class for you? Explain why.\
+    The easiest part for me was making and editing plots because it was easier to work through when I could run it after each edit and actively see how each line of code was working to affect my output.
 
+4.  What part of the class surprised or interested you the most? Explain why.\
+    I was surprised to find that I really enjoyed making visualizations in this class. I have never been a big fan of coding, but with this class having creative space for the plots we could make, I found myself actually really enjoying the process of editing plots and coding them to be more visually clear.
 
-3. What was the easiest part of the class for you? Explain why.
-
-
-4. What part of the class surprised or interested you the most? Explain why.
-
-
-5. Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.\
+    I would really recommend to give yourself a lot of the time for the labs. Having time to struggle through and take a break and look back makes it much more fun and makes it easier to get the hang of it, and really helps you learn through the process, and I think the labs are where the majority of my learning happened.
