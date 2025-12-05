@@ -12,8 +12,6 @@ execute:
 
 [**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a A-.
 
-In every lab and challenge in this class, I have carefully reviewed and revised my labs to ensure I learn from my mistakes and gain a deeper understanding of the content, taking more time on the content I struggle with. I have also carefully read over Dr. T's corrections from the midterm portfolio, and have made efforts to fix every single correction I was given. On top of that, I have carefully chosen code for every single piece of criteria, explaining any revisions I made, and ensuring the code I have provided is sufficiently exemplifying my knowledge of the content, and that my code is efficient.
-
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
 ## Working with Data
@@ -56,11 +54,6 @@ military <- read_xlsx("gov_spending_per_capita.xlsx",
 #| label: wd-2-ex-1
 # From Lab 3, Question 5
 teacher_evals_clean <- teacher_evals |>
-  rename(sex = gender) |>
-  filter(no_participants > 10) |>
-  mutate(
-    teacher_id = as.character(teacher_id),
-    weekday =  as.character(weekday)) |>
   select(
     course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg,
     percent_failed_cur, academic_degree, seniority, sex )
@@ -88,11 +81,6 @@ teacher_evals_clean <- teacher_evals |>
 #From Lab 3, Question 5 Revised
 # Changed it to select columns that contain "id", to show this action
 teacher_evals_clean <- teacher_evals |>
-  rename(sex = gender) |>
-  filter( no_participants > 10) |>
-  mutate(
-    across(.cols = c(teacher_id, weekday), 
-           .fns = ~as.character(.x))) |>
   select(contains("id"))
 ```
 
@@ -104,14 +92,7 @@ teacher_evals_clean <- teacher_evals |>
 #| label: wd-3-numeric-ex-1
 # From Lab 3, Question 5
 teacher_evals_clean <- teacher_evals |>
-  rename(sex = gender) |>
-  filter(no_participants > 10) |>
-  mutate(
-    teacher_id = as.character(teacher_id),
-    weekday =  as.character(weekday)) |>
-  select(
-    course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, 
-    percent_failed_cur, academic_degree, seniority, sex)
+  filter(no_participants > 10)
 ```
 
 -   Numeric Example 2
@@ -120,12 +101,7 @@ teacher_evals_clean <- teacher_evals |>
 #| label: wd-3-numeric-ex-1
 # From Lab 4, Question 5
 region_table <- ca_childcare |>
-  filter(study_year %in% c(2008, 2018)) |>
-  group_by (census_region, study_year) |>
-  summarize(median_income = median(mhi_2018)) |>
-  ungroup() |>
-  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "Year ") |>
-  arrange(desc('2018'))
+  filter(study_year %in% c(2008, 2018))
 ```
 
 -   Character Example 1 (any context)
@@ -135,10 +111,7 @@ region_table <- ca_childcare |>
 # Challenge 4
 ca_childcare <- counties |>
   filter(
-    state_name == "California") |>
-  left_join(
-    y = childcare_costs,
-    by = join_by(county_fips_code == county_fips_code))
+    state_name == "California")
 ```
 
 -   Character Example 2 (example must use functions from **stringr**)
@@ -147,18 +120,6 @@ ca_childcare <- counties |>
 #| label: wd-3-string
 # From Lab 5
 person1 <- person |>
-  left_join(
-    get_fit_now_member |>
-    rename(member_id = id),
-    by = join_by (name == name)) |>
-  left_join(
-    drivers_license,
-    by = join_by (license_id == id)) |>
-  left_join(
-    get_fit_now_check_in,
-    by = join_by (member_id == membership_id)) |>
-  mutate(
-    check_in_date = ymd(check_in_date)) |>
   filter(
     gender == "male",
     str_detect(plate_number, pattern = "H42"),
@@ -172,17 +133,6 @@ person1 <- person |>
 #| label: wd-3-date
 # From Lab 5, Revised, originally had filtered based on other factors, so I added this one in
 person1 <- person |>
-  left_join(
-    get_fit_now_member |>
-    rename(member_id = id),
-    by = join_by (name == name)) |>
-  left_join(
-    drivers_license,
-    by = join_by (license_id == id)) |>
-  left_join(
-    get_fit_now_check_in,
-    by = join_by (member_id == membership_id)) |>
-  mutate(check_in_date = ymd(check_in_date)) |>
   filter(
     gender == "male",
     str_detect(plate_number, pattern = "H42"),
@@ -199,14 +149,9 @@ person1 <- person |>
 #| label: wd-4-numeric-ex-1
 # From Lab 3, Question 5
 teacher_evals_clean <- teacher_evals |>
-  rename(sex = gender) |>
-  filter( no_participants > 10) |>
   mutate(
     teacher_id = as.character(teacher_id),
-    weekday =  as.character(weekday)) |>
-  select(
-    course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, 
-    percent_failed_cur, academic_degree, seniority, sex )
+    weekday =  as.character(weekday))
 ```
 
 -   Numeric Example 2
@@ -215,14 +160,12 @@ teacher_evals_clean <- teacher_evals |>
 #| label: wd-4-numeric-ex-2
 # From Challenge 3, Question 1
 teacher_evals_compare <- teacher_evals |>
-  filter(question_no == 903) |>
   mutate(
     set_level = if_else(SET_score_avg >= 4, "Excellent", "Standard"),
     sen_level = case_when(
       seniority <= 4 ~ "Junior",
       seniority >= 5 & seniority <= 8 ~ "Senior",
-      seniority > 8 ~ "Very Senior")) |>
-  select(set_level, sen_level, course_id)
+      seniority > 8 ~ "Very Senior"))
 ```
 
 -   Factor Example 1 (renaming levels)
@@ -231,11 +174,6 @@ teacher_evals_compare <- teacher_evals |>
 #| label: wd-4-factor-ex-1
 # Lab 4, Question 7
 center_childcare <- ca_childcare |>
-  select(census_region, mc_infant, mc_toddler, mc_preschool, study_year) |>
-  pivot_longer(
-    cols = starts_with("mc"),
-    names_to = "age_group",
-    values_to = "median_cost") |>
   mutate(
     age_group = case_when(
       age_group == "mc_infant" ~ "Infant",
@@ -254,11 +192,6 @@ center_childcare <- ca_childcare |>
 #| label: wd-4-factor-ex-2
 # Lab 4, Question 7
 center_childcare <- ca_childcare |>
-  select(census_region, mc_infant, mc_toddler, mc_preschool, study_year) |>
-  pivot_longer(
-    cols = starts_with("mc"),
-    names_to = "age_group",
-    values_to = "median_cost") |>
   mutate(
     age_group = case_when(
       age_group == "mc_infant" ~ "Infant",
@@ -289,16 +222,6 @@ suspects1 <- facebook_event_checkin |>
 #| label: wd-4-date
 # From Lab 5
 person1 <- person |>
-  left_join(
-    get_fit_now_member |>
-    rename(member_id = id),
-    by = join_by (name == name)) |>
-  left_join(
-    drivers_license,
-    by = join_by (license_id == id)) |>
-  left_join(
-    get_fit_now_check_in,
-    by = join_by (member_id == membership_id)) |>
   mutate(check_in_date = ymd(check_in_date)) |>
   filter(
     gender == "male",
@@ -315,7 +238,6 @@ person1 <- person |>
 #| label: wd-5-left-ex-1
 # Challenge 4
 ca_childcare <- counties |>
-  filter(state_name == "California") |>
   left_join(
     y = childcare_costs,
     by = join_by(county_fips_code))
@@ -330,8 +252,7 @@ ca_childcare <- counties |>
 ca_childcare <- childcare_costs |>
   right_join(
     x = counties,
-    by = join_by(county_fips_code)) |>
-  filter(state_name == "California")
+    by = join_by(county_fips_code))
 ```
 
 -   `left_join()` **or** `right_join()` Example 2
@@ -349,14 +270,7 @@ person1 <- person |>
     by = join_by (license_id == id)) |>
   left_join(
     get_fit_now_check_in,
-    by = join_by (member_id == membership_id)) |>
-  mutate(
-    check_in_date = ymd(check_in_date)) |>
-  filter(
-    gender == "male",
-    str_detect(plate_number, pattern = "H42"),
-    membership_status == "gold",
-    str_detect(member_id, pattern = "48Z"))
+    by = join_by (member_id == membership_id))
 ```
 
 -   `inner_join()` Example 1
@@ -366,7 +280,6 @@ person1 <- person |>
 # Challenge 4, Edited
 # Changed my pipeline to be an inner join instead
 ca_childcare <- counties |>
-  filter(state_name == "California") |>
   inner_join(
     y = childcare_costs,
     by = join_by(county_fips_code))
@@ -380,7 +293,7 @@ ca_childcare <- counties |>
 # Changed my pipeline to be an inner join instead
 person1 <- person |>
   inner_join(
-    get_fit_now_member |>
+    y = get_fit_now_member,
     rename(member_id = id),
     by = join_by (name == name))
 ```
@@ -394,7 +307,6 @@ person1 <- person |>
 # From Lab 5, Edited
 # Changed my pipeline from a left join to be a semi join instead, to get info for people present in both tables
 suspectinterview <- person |>
-  filter(name == "Miranda Priestly") |>
   semi_join(interview, by = c("id" = "person_id"))
 ```
 
@@ -405,7 +317,6 @@ suspectinterview <- person |>
 # Lab 5, Edited
 # Changed my pipeline from a left join to be an anti join instead, to get the people who didn't have an interview
 suspectinterview <- person |>
-  filter(name == "Miranda Priestly") |>
   anti_join(interview, by = c("id" = "person_id"))
 ```
 
@@ -430,17 +341,7 @@ childcare_vs_poverty <- ca_childcare |>
   pivot_longer(
     cols = starts_with("mfcc"),
     names_to = "home_age_group",
-    values_to = "median_home_cost") |>
-  mutate(
-     home_age_group = case_when(
-      home_age_group == "mfcc_infant" ~ "Infant",
-      home_age_group == "mfcc_toddler" ~ "Toddler",
-      home_age_group == "mfcc_preschool" ~ "Preschool")) |>
- mutate(
-    poverty_rate = cut(
-      pr_f,
-      breaks = 3,
-      labels = c("low", "medium", "high")))
+    values_to = "median_home_cost")
 ```
 
 -   `pivot_wider()`
@@ -453,8 +354,7 @@ region_table <- ca_childcare |>
   group_by (census_region, study_year) |>
   summarize(median_income = median(mhi_2018)) |>
   ungroup() |>
-  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "Year ") |>
-  arrange(2018)
+  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "Year ")
 ```
 
 ## Reproducibility
@@ -910,13 +810,10 @@ teacher_evals_clean |>
 
 ```{r}
 #| label: dvs-4-across
-#From Lab 3, Question 5
-teacher_evals_clean <- teacher_evals |>
-  rename(sex = gender) |>
-  filter( no_participants > 10) |>
-  mutate(
-    across(.cols = c(teacher_id, weekday), 
-           .fns = ~as.character(.x)))
+#From Lab 3, Question 8
+teacher_evals_na <- teacher_evals_clean |>
+  filter(if_any(everything(), is.na)) |>
+  select(teacher_id, course_id, where(~ any(is.na(.))))
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -928,8 +825,7 @@ teacher_evals_clean <- teacher_evals |>
 # From Lab 3, Question 9
 teacher_evals_allqs <- teacher_evals_clean |>
   group_by(teacher_id) |>
-  summarize(n_questions = n_distinct(question_no)) |>
-  filter(n_questions == 9)
+  summarize(n_questions = n_distinct(question_no))
 ```
 
 -   Example 2
@@ -940,10 +836,7 @@ teacher_evals_allqs <- teacher_evals_clean |>
 region_table <- ca_childcare |>
   filter(study_year %in% c(2008, 2018)) |>
   group_by (census_region, study_year) |>
-  summarize(median_income = median(mhi_2018)) |>
-  ungroup() |>
-  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "Year ") |>
-  arrange(desc('2018'))
+  summarize(median_income = median(mhi_2018))
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
@@ -1040,11 +933,6 @@ df <- surveys |>
 #| label: dvs-7-ex-1
 # From Lab 9, Question 6
 evals |>
-  filter(no_participants > 10) |>
-  select(
-    academic_degree, 
-    seniority, 
-    sex ) |>
   map_at(.at = c("academic_degree", "seniority", "sex"), .f = convert_to_factor) |>
   bind_cols() |>
   rename(
@@ -1297,16 +1185,19 @@ evals |>
 
 ```{r}
 #| label: pe-4-1
-# From Lab 3, Question 5
-teacher_evals_clean <- teacher_evals |>
-  rename(sex = gender) |>
-  filter( no_participants > 10) |>
-  mutate(
-    teacher_id = as.character(teacher_id),
-    weekday =  as.character(weekday)) |>
-  select(
-    course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, 
-    percent_failed_cur, academic_degree, seniority, sex )
+# Lab 4, Question 8
+ca_childcare |>
+  filter() |>
+  ggplot(aes(x = mhi_2018, y = mfcc_infant)) +
+  theme_light() +
+  geom_point(alpha = 0.5, color = "plum") +
+  geom_smooth(method = "lm", se = FALSE, color = "mediumorchid4") +
+  labs(
+    title = "Median Income (per Household) vs. Weekly Infant Childcare Cost (in California)",
+    x = "Median Household Income",
+    y = "Median Weekly Infant Cost") +
+  scale_y_continuous(labels = scales:: label_currency(prefix = "$"))+
+  scale_x_continuous(labels = scales:: label_currency(prefix = "$"))
 ```
 
 -   I can connect a data wrangling pipeline into a `ggplot()`
@@ -1390,20 +1281,19 @@ chisq.test(chi_test_table)
 
 ```{r}
 #| label: dsm-2-3
-# Lab 10, Question 5
-model_lm <- lm(y ~ x, data = observed_data)
-summary(model_lm)
+# Lab 2, Question 17
+summary(aov(weight ~ species, data = surveys))
 ```
 
 ## Revising My Thinking
 
-I have revised my thinking by getting a lot more mindful about grouping functions and focusing on concise code instead of simply one that works. Grouping mutate actions and filter actions, for instance, make it both easier for me to have concise code that I can skim through to look for errors or edit, and makes it easier for others to understand my code. Thus, I have revised my approach to writing code, and go back and edit my codes to ensure efficiency, and work to group actions together when possible.
+I have revised my thinking by getting a lot more mindful about grouping functions and focusing on concise code instead of simply one that works. Grouping mutate actions and filter actions, for instance, make it both easier for me to have concise code that I can skim through to look for errors or edit, and makes it easier for others to understand my code. Initially, struggling to grasp certain concepts, I settled on dealing with small parts at a time, and didn't take the extra step of seeing if any of those steps could be consolodated into the same pipeline of code. Thus, I have revised my approach to writing code, and go back and edit my codes to ensure efficiency, and work to group actions together when possible. On top of that, going back through my code to ensure efficiency helped me get the hang of content quicker, helping ensure I was understanding what each line of code was doing and oftentimes I was able to catch errors by doing this.
 
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
-I have extended my thinking by really considering whether my color/ personal changes to my plots are helping the reader, or simply adding fun changes. At the start of this course, I would alter colors and plot features simply to test if I remembered the code, or based on my personal color preferences. However, now, I really consider which changes would help the reader, and look at it more from a Data Analyst or Statistician view, extending my thinking and contemplating what aspects of the graph are less clear, could be clearer, or any edits I could make to overall help highlight the important trends present. I also now consider if certain color combinations make the plots harder to understand, or emphasize the wrong parts of my plots, working to make the plots easily understood regardless of audience.
+I have extended my thinking by really considering whether my color/ personal changes to my plots are helping the reader, or simply adding fun changes. At the start of this course, I would alter colors and plot features simply to test if I remembered the code, or based on my personal color preferences. However, now, I really consider which changes would help the reader, and look at it more from a Data Analyst or Statistician view, extending my thinking and contemplating what aspects of the graph are less clear, could be clearer, or any edits I could make to overall help highlight the important trends present. I also now consider if certain color combinations make the plots harder to understand, or emphasize the wrong parts of my plots, working to make the plots easily understood regardless of audience. In addition to that, working with data wrangling also made me extend my thinking, and was a bit difficult for me to grasp at first. As opposed to changes you can see visually on a graph, in data wrangling, I had trouble with the steps that were happening behind the scenes, and to grasp if the moves I was making were doing what I wanted them to. Especially with pivoting wider or longer, I had to extend my thinking in a way I hadn't done in other classes in the past, and though I struggled, through practice I was able to get the hang of it, and imagine what was happening with the data with each line of code.
 
 ## Peer Support & Collaboration
 
@@ -1413,4 +1303,4 @@ Peer Review I gave that I am proud of:
 
 ![](images/Screen%20Shot%202025-10-26%20at%2010.48.26%20PM.png){width="200"}
 
-I think I grew as a collaborator by being a lot more open minded that oftentimes there are multiple different ways to approach a problem, or perform an action, most of which are not better or worse than the others. This has helped my thinking and understanding in the course, and really consider the various methods I could take to perform an action. It has also helped me compare and contrast methods or approaches and consider which is more concise, more easily understood by other viewers, or most helpful in performing the action required, or if they are simply different ways of performing the same function.
+I think I grew as a collaborator by being a lot more open minded that oftentimes there are multiple different ways to approach a problem, or perform an action, most of which are not better or worse than the others. This has helped my thinking and understanding in the course, and really consider the various methods I could take to perform an action. It has also helped me compare and contrast methods or approaches and consider which is more concise, more easily understood by other viewers, or most helpful in performing the action required, or if they are simply different ways of performing the same function. I also think that throughout this course I grew in the type of feedback I would give. At first, I focused on aesthetics, and throughout the quarter this shifted towards functionality and efficiency. I learned to look for aspects to fix that were more helpful in writing code and performing functions, remarks that were more helpful going forward than commenting on the looks of the plots. And, by growing in this way as a collaborator, this actually benefited me as a coder, helping me look out for these same aspects when I was coding my own plots, functions, and tables.
